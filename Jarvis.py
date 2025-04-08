@@ -10,6 +10,8 @@ import os
 import subprocess
 import requests
 import json
+import random 
+from personalidade import PersonalidadeJarvis
 from typing import Optional, Dict, Callable, List
 
 
@@ -23,13 +25,15 @@ class Configuracoes:
 class TextoParaFala:
     def __init__(self):
         self.motor = pyttsx3.init()
-        self.motor.setProperty("rate", Configuracoes.VELOCIDADE_FALA)
-        vozes = self.motor.getProperty('voices')
-        self.motor.setProperty('voice', vozes[Configuracoes.VOZ_FALA].id)
-    
-    def falar(self, texto: str):
-        self.motor.say(texto)
-        self.motor.runAndWait()
+        self.motor.setProperty("rate", 180)  
+        self.motor.setProperty("volume", 0.9)
+        
+       
+        try:
+            voices = self.motor.getProperty('voices')
+            self.motor.setProperty('voice', voices[2].id)  
+        except:
+            pass
 
 
 class ReconhecedorDeVoz:
@@ -63,6 +67,7 @@ class GerenciadorDeComandos:
     def _registrar_comandos(self) -> Dict[str, Callable]:
         return {
             'como você está': self._resposta_status,
+            'status do sistema': self._resposta_status,
             'abrir navegador': self._abrir_navegador,
             'abrir youtube': self._abrir_youtube,
             'tocar música': self._reproduzir_musica,
@@ -74,7 +79,9 @@ class GerenciadorDeComandos:
             'abrir aplicativo': self._abrir_aplicativo,
             'escrever nota': self._criar_nota,
             'ler nota': self._ler_notas,
-            'previsão do tempo': self._previsao_tempo
+            'previsão do tempo': self._previsao_tempo,
+            'conte uma piada': self._contar_piada,
+            'diagnóstico': self._verificar_sistemas
         }
     
     def processar_comando(self, comando: str) -> bool:
@@ -95,8 +102,8 @@ class GerenciadorDeComandos:
     
    
     def _resposta_status(self, comando: str) -> bool:
-        self.sistema_fala.falar("Estou operando normalmente!")
-        self.sistema_fala.falar("Como posso ajudá-lo hoje?")
+        self.sistema_fala.falar(PersonalidadeJarvis.confirmacao())
+        self.sistema_fala.falar("Status de todos os sistemas: operacionais. Como posso ajudar?")
         return True
     
     def _abrir_navegador(self, comando: str) -> bool:
@@ -155,7 +162,7 @@ class GerenciadorDeComandos:
         return True
     
     def _finalizar_assistente(self, comando: str) -> bool:
-        self.sistema_fala.falar("À sua disposição! Encerrando operação.")
+        self.sistema_fala.falar(PersonalidadeJarvis.despedida())
         return False
     
     def _abrir_aplicativo(self, comando: str) -> bool:
@@ -195,17 +202,20 @@ class GerenciadorDeComandos:
     def _previsao_tempo(self, comando: str) -> bool:
         self.sistema_fala.falar("Funcionalidade em desenvolvimento")
         return True
+    
+    def _contar_piada(self, comando: str) -> bool:
+        self.sistema_fala.falar(PersonalidadeJarvis.piada())
+        return True
+    
+    def _verificar_sistemas(self, comando: str) -> bool:
+        sistemas = ["Sensores", "Propulsores", "IA", "Armamento", "Energia"]
+        status = random.choice(["100% operacional", "95% eficiência", "necessita calibração"])
+        self.sistema_fala.falar(f"Diagnóstico completo. {random.choice(sistemas)}: {status}")
+        return True
 
 
 def saudar_usuario() -> str:
-    hora_atual = datetime.datetime.now().hour
-    if 6 <= hora_atual < 12:
-        return "Bom dia! Como posso ser útil?"
-    elif 12 <= hora_atual < 18:
-        return "Boa tarde! Quais são suas ordens?"
-    else:
-        return "Boa noite! Em que posso ajudar?"
-
+    return PersonalidadeJarvis.saudacao()
 
 def executar_assistente():
     sistema_fala = TextoParaFala()
