@@ -27,7 +27,7 @@
 
 1. **Pré-requisitos**:
    ```bash
-   pip install pyttsx3 speechrecognition pyautogui pyperclip requests
+   pip install pyttsx3 speechrecognition pyautogui pyperclip requests pause pyaudio
 
 ## 🌟 Próximas Atualizações
 
