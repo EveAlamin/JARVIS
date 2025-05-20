@@ -28,12 +28,17 @@ class TextoParaFala:
         self.motor.setProperty("rate", 180)  
         self.motor.setProperty("volume", 0.9)
         
-       
         try:
             voices = self.motor.getProperty('voices')
             self.motor.setProperty('voice', voices[2].id)  
         except:
             pass
+
+    def falar(self, texto):
+        print(f"Jarvis: {texto}")  # Exibe no terminal também
+        self.motor.say(texto)
+        self.motor.runAndWait()
+
 
 
 class ReconhecedorDeVoz:
@@ -118,7 +123,7 @@ class GerenciadorDeComandos:
     
     def _reproduzir_musica(self, comando: str) -> bool:
         self.sistema_fala.falar("Reproduzindo música selecionada")
-        webbrowser.open('https://www.youtube.com/watch?v=JGwWNGJdvx8')
+        webbrowser.open('https://youtube.com/playlist?list=PL_Q15fKxrBb7wo5SRxHbhk6ZL6zMYh5tH&si=xTC5mwP8jrNdftsh')
         return True
     
     def _dizer_hora(self, comando: str) -> bool:
